@@ -1,7 +1,7 @@
 """Server for Web Deployment"""
 
 from flask import Flask, render_template, request
-from EmotionDetection import emotion_detector
+from EmotionDetection.emotion_detection import emotion_detector
 
 
 app = Flask("Emotion Detection")
@@ -28,19 +28,15 @@ def emotion_analysis() -> str:
     if analysis_result.get("dominant_emotion") is None:
         response = "Invalid text! Please try again!"
     else:
-        response = "For the given statement, the system response is"
-
-        for key, value in analysis_result.items():
-            # dominant emotion is mentioned separately as its own sentence.
-            if key != "dominant_emotion":
-                response += f" '{key}': {value},"
-
-        # Replace last comma with point. If index is -1, no commas found.
-        last_comma_index = response.rfind(",")
-        if last_comma_index != -1:
-            response = response[:last_comma_index] + '.' + response[last_comma_index + 1:]
-
-        response += f" The dominant emotion is {analysis_result['dominant_emotion']}."
+        response = (
+            "For the given statement, the system response is "
+            f"'anger': {analysis_result['anger']}, "
+            f"'disgust': {analysis_result['disgust']}, "
+            f"'fear': {analysis_result['fear']}, "
+            f"'joy': {analysis_result['joy']} and "
+            f"'sadness': {analysis_result['sadness']}. "
+            f"The dominant emotion is {analysis_result['dominant_emotion']}."
+        )
 
     return response
 
@@ -48,4 +44,4 @@ def emotion_analysis() -> str:
 # To make sure that the server only runs when the script is executed
 # directly (not imported as a module)
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug=True)
